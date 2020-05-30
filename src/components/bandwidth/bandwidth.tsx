@@ -9,33 +9,39 @@ function Bandwidth() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [auth, setAuth] = useState([]);
-  const [bandwidth, setBandwidth] = useState([]);
+  const [bandwidthCDN, setBandwidthCdn] = useState([]);
+  const [bandwidthPeertopeer, setBandwidthPeertopeer] = useState([]);
 
   useEffect(() => {
     AuthService(
       setError,
       setIsLoaded,
       setAuth,
-      setBandwidth
+      setBandwidthCdn,
+      setBandwidthPeertopeer
     );
-
-    
   }, []);
 
-  var date = [];
-
-  var data: any = [];
-  for (var i = 0; i < bandwidth.length; i++) {
-    var time = new Date(bandwidth[i][0]);
-    var level = bandwidth[i][1];
+  var date:any = [];
+  var data_cdn: any = [],
+    max_cdn: number;
+  var data_p2p: any = [];
+  for (var i = 0; i < bandwidthPeertopeer.length; i++) {
+    var time = new Date(bandwidthCDN[i][0]);
+    var value_bandwidth = bandwidthCDN[i][1];
+    var value_peertopeer = bandwidthPeertopeer[i][1];
+    //var t = new Date(bandwidthCDN[i][0];
     date.push(
-      //{ date : [time.getFullYear(), time.getMonth() + 1, time.getDate()].join("/"), level : level }
-      [time.getDate(), time.getMonth() + 1].join("/")
+      //{ date : [time.getFullYear(), time.getMonth() + 1, time.getDate()].join("/"), value_bandwidth : value_bandwidth }
+     // [time.getDate(), time.getMonth() + 1].join("/")
+     time
     );
-    data.push(level);
+    data_cdn.push(Number(value_bandwidth)/1000000000);
+    data_p2p.push(Number(value_peertopeer)/1000000000);
   }
 
- /* date.sort(function(a,b){
+  max_cdn = Math.max.apply(null, data_cdn);
+  /* date.sort(function(a,b){
     // Turn your strings into dates, and then subtract them
     // to get a value that is either negative, positive, or zero.
     return Number(new Date(a.date)) - Number(new Date(b.date));
@@ -71,21 +77,36 @@ console.log('check foo '+foo(date))
   } else if (!isLoaded) {
     return <div>Loading...</div>;
   } else {
-
     return (
       <div>
         <ul>
           <li>{auth}</li>
-          <li>{bandwidth}</li>
+          <li>{bandwidthCDN}</li>
         </ul>
+        // @ts-ignore
         <ReactEcharts
+          style={{ height: "500px" }}
           option={{
-            tooltip: {
-              trigger: "axis",
-              position: function (pt: any) {
-                return [pt[0], "10%"];
+            tooltip : {
+              trigger: 'axis',
+              axisPointer: {
+                  animation: true
               },
-            },
+              formatter: function (params:any) {
+                // @ts-ignore
+                  var colorSpan = color => '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + color + '"></span>';
+                  let rez = '<p>' + params[0].axisValue + '</p>';
+                  //console.log(params); //quite useful for debug
+                   // @ts-ignore 
+                  params.forEach(item => {
+                      //console.log(item); //quite useful for debug
+                      var xx = '<p>'   + colorSpan(item.color) + ' ' + item.seriesName + ': ' + item.data + ' Gbps' + '</p>'
+                      rez += xx;
+                  });
+          
+                  return rez;
+              }        
+          },
             title: {
               left: "center",
               text: "大数据量面积图",
@@ -100,22 +121,33 @@ console.log('check foo '+foo(date))
               },
             },
             xAxis: {
+              axisLabel : {
+                interval: 24,
+                formatter : function (value:any){
+                  var time = new Date(value)
+                  return [time.getDate(), time.getMonth() + 1].join("/")
+                }
+              },
               type: "category",
               boundaryGap: false,
-              axisLabel:{
-                interval:24
-             },
+             
               data: date,
             },
+            // @ts-ignore
             yAxis: {
+              axisLabel: {
+                formatter: function (value: any) {
+                  return value + " Gbps";
+                },
+              },
               type: "value",
-              boundaryGap: [0, "100%"],
+              boundaryGap: [0, "20%"],
             },
             dataZoom: [
               {
                 type: "inside",
                 start: 0,
-                end: 10,
+                end: 1300,
               },
               {
                 start: 0,
@@ -135,8 +167,9 @@ console.log('check foo '+foo(date))
             // @ts-ignore
             series: [
               {
-                name: "模拟数据",
+                name: "HTTP",
                 type: "line",
+
                 smooth: true,
                 symbol: "none",
                 sampling: "average",
@@ -155,7 +188,39 @@ console.log('check foo '+foo(date))
                     },
                   ]),
                 },
-                data: data,
+                markLine: {
+                  type : "value",
+                  data : [
+                   
+                        {name: 'OKKK',xAxis:data_cdn[0],yAxis:max_cdn},
+                    
+                   
+                ],
+                },
+                data: data_cdn,
+              },
+              {
+                name: "P2P",
+                type: "line",
+                smooth: true,
+                symbol: "none",
+                sampling: "average",
+                itemStyle: {
+                  color: "#12A5ED",
+                },
+                areaStyle: {
+                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    {
+                      offset: 0,
+                      color: "#12A5ED",
+                    },
+                    {
+                      offset: 1,
+                      color: "#12A5ED",
+                    },
+                  ]),
+                },
+                data: data_p2p,
               },
             ],
           }}

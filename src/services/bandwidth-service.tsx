@@ -1,5 +1,5 @@
 
-export default function BandwidthService(auth:any, setBandwidth : any , setIsLoaded : any , setError : any) {
+export default function BandwidthService(auth:any, setBandwidthCdn : any ,setBandwidthPeertopeer : any, setIsLoaded : any , setError : any) {
     console.log('check this auth '+auth)
     const bandwidthRequest = {
         method: "POST",
@@ -10,7 +10,8 @@ export default function BandwidthService(auth:any, setBandwidth : any , setIsLoa
       .then((res) => res.json())
       .then(
         (result) => {
-          setBandwidth(result.cdn);
+          setBandwidthCdn(result.cdn);
+          setBandwidthPeertopeer(result.p2p);
           setIsLoaded(true);
           
         },
