@@ -1,7 +1,8 @@
-import BandwidthService from "./bandwidth-service";
+import BandwidthService from "./bandwidth.service";
+import AudienceService from "./audience.service"
 
 
-function AuthService(setError:any, setIsLoaded:any, setAuth:any, setBandwidthCdn : any, setBandwidthPeertopeer : any) {
+function AuthService(setError:any, setIsLoaded:any, setAuth:any, setBandwidthCdn : any, setBandwidthPeertopeer : any, setAudience : any) {
     console.log('ok')
     var sessionToken = '';
     const authRequest = {
@@ -17,6 +18,7 @@ function AuthService(setError:any, setIsLoaded:any, setAuth:any, setBandwidthCdn
             setAuth(result.session_token);
             sessionToken = result.session_token;
             BandwidthService(sessionToken, setBandwidthCdn, setBandwidthPeertopeer, setIsLoaded, setError);
+            AudienceService(sessionToken, setAudience, setIsLoaded, setError)
              
           },
           // Note: it's important to handle errors here

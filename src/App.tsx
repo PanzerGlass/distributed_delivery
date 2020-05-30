@@ -1,13 +1,13 @@
 import React from 'react';
 import './App.css';
-import Bandwidth from './components/bandwidth/bandwidth'
+import AnalyticsComponent from './components/analytics/analytics.component'
 
 
 function App() {
   return (
     <div className="App">
      
-      <Bandwidth/>
+      <AnalyticsComponent/>
     </div>
   );
 }
