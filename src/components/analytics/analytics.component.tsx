@@ -35,10 +35,7 @@ function Analytics() {
     var value_bandwidth = bandwidthCDN[i][1];
     var value_peertopeer = bandwidthPeertopeer[i][1];
     var value_audience = audience[i][1];
-    //var t = new Date(bandwidthCDN[i][0];
     date.push(
-      //{ date : [time.getFullYear(), time.getMonth() + 1, time.getDate()].join("/"), value_bandwidth : value_bandwidth }
-      // [time.getDate(), time.getMonth() + 1].join("/")
       time
     );
     data_cdn.push(Number(value_bandwidth) / 1000000000);
@@ -48,35 +45,7 @@ function Analytics() {
 
   max_cdn = Math.max.apply(null, data_cdn);
   max_peertopeer = Math.max.apply(null, data_p2p);
-  /* date.sort(function(a,b){
-    // Turn your strings into dates, and then subtract them
-    // to get a value that is either negative, positive, or zero.
-    return Number(new Date(a.date)) - Number(new Date(b.date));
-  });
-  function foo(arr:any) {
-    var a = [],
-      b = [],
-      c:any = [],
-      prev;
-
-    arr.sort();
-    for (var i = 0; i < arr.length; i++) {
-      if (arr[i].date !== prev) {
-        a.push(arr[i].date);
-        b.push(1);
-        c.push(arr[i].level)
-      } else {
-        b[b.length - 1]++;
-        c[c.length -1] = Number(c[c.length -1]) + Number(arr[i].level)
-      }
-      prev = arr[i].date;
-    }
-
-    return [a, b ,c ]; 
-  }
-
-console.log('check foo '+foo(date))
-*/
+ 
 
   if (error) {
     // @ts-ignore
@@ -86,9 +55,10 @@ console.log('check foo '+foo(date))
   } else {
     return (
       <div>
-        // @ts-ignore
-        <ReactEcharts
-          style={{ height: "500px" }}
+        
+        <ReactEcharts 
+       
+          style={{ width : "100%", height : "400px", paddingTop : "80px"}}
           option={{
             tooltip: {
               trigger: "axis",
@@ -102,7 +72,8 @@ console.log('check foo '+foo(date))
                   color +
                   '"></span>';
                 let rez = "<p>" + params[0].axisValue.slice(0, 25) + "</p>";
-                let total = 0;
+                let total:number = 0;
+                let spike:number = 0;
                 //console.log(params); //quite useful for debug
                 // @ts-ignore
                 params.forEach((item) => {
@@ -119,14 +90,18 @@ console.log('check foo '+foo(date))
                     "</p>";
                   rez += xx;
                   total = total + Number(item.data);
+                  if (item.seriesName == "P2P") {spike = Number(item.data)/total}
                 });
 
                 return (
                   rez +
-                  "<hr/><p>Total : " +
+                  "<hr/><p>Total :  <span style='color:#1D874D'>&nbsp;" + 
                   total.toString().slice(0, 5) +
                   " Gbps" +
-                  "</p>"
+                  "</span></p>" +
+                  "<p>Spike reduction : <span style='color:#005D9F'>&nbsp;" + 
+                  (spike*100).toString().slice(0,5) +
+                  "%</p>"
                 );
               },
             },
@@ -134,7 +109,7 @@ console.log('check foo '+foo(date))
               left: "center",
               text: "CAPACITY OFFLOAD",
             },
-            toolbox: {
+            /*toolbox: {
               feature: {
                 dataZoom: {
                   yAxisIndex: "none",
@@ -142,7 +117,7 @@ console.log('check foo '+foo(date))
                 restore: {},
                 saveAsImage: {},
               },
-            },
+            },*/
             xAxis: {
               axisLabel: {
                 interval: 24,
@@ -212,10 +187,12 @@ console.log('check foo '+foo(date))
                   ]),
                 },
                 markLine: {
+                  
                   type: "value",
                   data: [
                     {
                       name: "HTTP",
+                      label : { formatter : "Max CDN : {c} Gbps"},
                       xAxis: data_cdn[0],
                       yAxis: max_cdn,
                       lineStyle: {
@@ -226,6 +203,7 @@ console.log('check foo '+foo(date))
                     },
                     {
                       name: "P2P",
+                      label : { formatter : "Max P2P : {c} Gbps"},
                       xAxis: data_p2p[0],
                       yAxis: max_peertopeer,
                       lineStyle: {
@@ -264,9 +242,10 @@ console.log('check foo '+foo(date))
             ],
           }}
         />
-        // @ts-ignore
-        <ReactEcharts
-          style={{ height: "500px" }}
+        
+      
+        <ReactEcharts className={"charts"}
+          style={{ width : "100%", height : "400px",paddingTop : "100px"}}
           option={{
             tooltip: {
               trigger: "axis",
@@ -278,7 +257,7 @@ console.log('check foo '+foo(date))
               left: "center",
               text: "CONCURRENT VIEWERS",
             },
-            toolbox: {
+            /*toolbox: {
               feature: {
                 dataZoom: {
                   yAxisIndex: "none",
@@ -286,7 +265,7 @@ console.log('check foo '+foo(date))
                 restore: {},
                 saveAsImage: {},
               },
-            },
+            },*/
             xAxis: {
               axisLabel: {
                 interval: 24,
