@@ -1,6 +1,6 @@
 
 export default function BandwidthService(auth:any, setBandwidthCdn : any ,setBandwidthPeertopeer : any, setIsLoaded : any , setError : any) {
-    console.log('check this auth '+auth)
+   
     const bandwidthRequest = {
         method: "POST",
         headers: { "Content-Type": "application/json" },

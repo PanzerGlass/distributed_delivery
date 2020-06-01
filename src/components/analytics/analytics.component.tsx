@@ -35,9 +35,7 @@ function Analytics() {
     var value_bandwidth = bandwidthCDN[i][1];
     var value_peertopeer = bandwidthPeertopeer[i][1];
     var value_audience = audience[i][1];
-    date.push(
-      time
-    );
+    date.push(time);
     data_cdn.push(Number(value_bandwidth) / 1000000000);
     data_p2p.push(Number(value_peertopeer) / 1000000000);
     data_audience.push(value_audience);
@@ -45,7 +43,6 @@ function Analytics() {
 
   max_cdn = Math.max.apply(null, data_cdn);
   max_peertopeer = Math.max.apply(null, data_p2p);
- 
 
   if (error) {
     // @ts-ignore
@@ -55,10 +52,8 @@ function Analytics() {
   } else {
     return (
       <div>
-        
-        <ReactEcharts 
-       
-          style={{ width : "100%", height : "400px", paddingTop : "80px"}}
+        <ReactEcharts
+          style={{ width: "100%", height: "400px", paddingTop: "60px" }}
           option={{
             tooltip: {
               trigger: "axis",
@@ -72,8 +67,8 @@ function Analytics() {
                   color +
                   '"></span>';
                 let rez = "<p>" + params[0].axisValue.slice(0, 25) + "</p>";
-                let total:number = 0;
-                let spike:number = 0;
+                let total: number = 0;
+                let spike: number = 0;
                 //console.log(params); //quite useful for debug
                 // @ts-ignore
                 params.forEach((item) => {
@@ -90,17 +85,19 @@ function Analytics() {
                     "</p>";
                   rez += xx;
                   total = total + Number(item.data);
-                  if (item.seriesName == "P2P") {spike = Number(item.data)/total}
+                  if (item.seriesName === "P2P") {
+                    spike = Number(item.data) / total;
+                  }
                 });
 
                 return (
                   rez +
-                  "<hr/><p>Total :  <span style='color:#1D874D'>&nbsp;" + 
+                  "<hr/><p>Total :  <span style='color:#1D874D'>&nbsp;" +
                   total.toString().slice(0, 5) +
                   " Gbps" +
                   "</span></p>" +
-                  "<p>Spike reduction : <span style='color:#005D9F'>&nbsp;" + 
-                  (spike*100).toString().slice(0,5) +
+                  "<p>Spike reduction : <span style='color:#005D9F'>&nbsp;" +
+                  (spike * 100).toString().slice(0, 5) +
                   "%</p>"
                 );
               },
@@ -169,7 +166,7 @@ function Analytics() {
                 type: "line",
 
                 smooth: true,
-                symbol: "none",
+                symbol: "circle",
                 sampling: "average",
                 itemStyle: {
                   color: "rgb(255, 70, 131)",
@@ -187,12 +184,11 @@ function Analytics() {
                   ]),
                 },
                 markLine: {
-                  
                   type: "value",
                   data: [
                     {
                       name: "HTTP",
-                      label : { formatter : "Max CDN : {c} Gbps"},
+                      label: { formatter: "Max CDN : {c} Gbps" },
                       xAxis: data_cdn[0],
                       yAxis: max_cdn,
                       lineStyle: {
@@ -203,7 +199,7 @@ function Analytics() {
                     },
                     {
                       name: "P2P",
-                      label : { formatter : "Max P2P : {c} Gbps"},
+                      label: { formatter: "Max P2P : {c} Gbps" },
                       xAxis: data_p2p[0],
                       yAxis: max_peertopeer,
                       lineStyle: {
@@ -220,7 +216,7 @@ function Analytics() {
                 name: "P2P",
                 type: "line",
                 smooth: true,
-                symbol: "none",
+                symbol: "circle",
                 sampling: "average",
                 itemStyle: {
                   color: "#12A5ED",
@@ -242,10 +238,9 @@ function Analytics() {
             ],
           }}
         />
-        
-      
-        <ReactEcharts className={"charts"}
-          style={{ width : "100%", height : "400px",paddingTop : "100px"}}
+        <ReactEcharts
+          className={"charts"}
+          style={{ width: "100%", height: "400px", paddingTop: "100px" }}
           option={{
             tooltip: {
               trigger: "axis",
@@ -311,7 +306,7 @@ function Analytics() {
                 name: "Audience",
                 type: "line",
                 smooth: true,
-                symbol: "none",
+                symbol: "circle",
                 sampling: "average",
                 itemStyle: {
                   color: "#DDA02A",
